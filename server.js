@@ -3,7 +3,7 @@ const fetch = require("node-fetch");
 const app = express();
 require("dotenv").config();
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 const API_KEY = process.env.API_KEY;
 const PRIM_BASE_URL = "https://prim.iledefrance-mobilites.fr/marketplace/stop-monitoring";
 
