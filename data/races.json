@@ -1,0 +1,18 @@
+{
+  "date": "2025-11-02",
+  "hippodrome": "Paris-Vincennes",
+  "courses": [
+    {
+      "heure": "13:50",
+      "nom": "Prix d'Essai (exemple)",
+      "distance": "2100m",
+      "type": "Attelé"
+    },
+    {
+      "heure": "14:25",
+      "nom": "Prix Demo (exemple)",
+      "distance": "2700m",
+      "type": "Attelé"
+    }
+  ]
+}
