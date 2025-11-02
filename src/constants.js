@@ -1,14 +1,10 @@
 // =====================================================
-// 🌐 constants.js — Dashboard Vincennes (version corrigée 2025-11)
+// 🌐 constants.js — Dashboard Vincennes (version stabilisée 2025-11-02)
 // =====================================================
 
-// ---------------------------------------------
-// 🔐 Proxy Cloudflare (la clé API IDFM est injectée côté Worker)
-// ---------------------------------------------
 export const PROXY_URL =
   "https://ratp-proxy.hippodrome-proxy42.workers.dev/?url=";
 
-/** Génère une URL PRIM via proxy */
 export function primUrl(path, params) {
   const base = "https://prim.iledefrance-mobilites.fr" + path;
   const qs = new URLSearchParams(params).toString();
@@ -16,7 +12,7 @@ export function primUrl(path, params) {
 }
 
 // =====================================================
-// 🚆 Identifiants de lignes (LineRef IDFM / PRIM)
+// 🚆 Lignes IDFM
 // =====================================================
 export const LINE_REFS = {
   RERA: "STIF:Line::C01742:",
@@ -34,7 +30,7 @@ export const LINE_REFS = {
 };
 
 // =====================================================
-// 🅿️ StopPoints valides (MonitoringRef)
+// 🅿️ StopPoints valides (MonitoringRef PRIM confirmés)
 // =====================================================
 export const STOPS = {
   JOINVILLE_RER: {
@@ -43,7 +39,7 @@ export const STOPS = {
     BUS_201: ["STIF:StopPoint:Q:457949:"],
     BUS_108: ["STIF:StopPoint:Q:457933:"],
     BUS_110: ["STIF:StopPoint:Q:457934:"],
-    BUS_101: ["STIF:StopPoint:Q:457933:"], // même zone
+    BUS_101: ["STIF:StopPoint:Q:457933:"],
     BUS_281: ["STIF:StopPoint:Q:457944:"],
     BUS_520: ["STIF:StopPoint:Q:457940:"],
     N33: ["STIF:StopPoint:Q:457943:"],
@@ -68,82 +64,35 @@ export const STOPS = {
 // 🌍 URLs PRIM (Stop-Monitoring par zone)
 // =====================================================
 export const URLS = {
-  JOINVILLE: {
-    RERA: primUrl("/marketplace/stop-monitoring", {
-      MonitoringRef: STOPS.JOINVILLE_RER.RERA[0],
-      LineRef: LINE_REFS.RERA,
-    }),
-    BUS_77: primUrl("/marketplace/stop-monitoring", {
-      MonitoringRef: STOPS.JOINVILLE_RER.BUS_77[0],
-      LineRef: LINE_REFS.BUS_77,
-    }),
-    BUS_201: primUrl("/marketplace/stop-monitoring", {
-      MonitoringRef: STOPS.JOINVILLE_RER.BUS_201[0],
-      LineRef: LINE_REFS.BUS_201,
-    }),
-    BUS_108: primUrl("/marketplace/stop-monitoring", {
-      MonitoringRef: STOPS.JOINVILLE_RER.BUS_108[0],
-      LineRef: LINE_REFS.BUS_108,
-    }),
-    BUS_110: primUrl("/marketplace/stop-monitoring", {
-      MonitoringRef: STOPS.JOINVILLE_RER.BUS_110[0],
-      LineRef: LINE_REFS.BUS_110,
-    }),
-    BUS_101: primUrl("/marketplace/stop-monitoring", {
-      MonitoringRef: STOPS.JOINVILLE_RER.BUS_101[0],
-      LineRef: LINE_REFS.BUS_101,
-    }),
-    BUS_281: primUrl("/marketplace/stop-monitoring", {
-      MonitoringRef: STOPS.JOINVILLE_RER.BUS_281[0],
-      LineRef: LINE_REFS.BUS_281,
-    }),
-    BUS_520: primUrl("/marketplace/stop-monitoring", {
-      MonitoringRef: STOPS.JOINVILLE_RER.BUS_520[0],
-      LineRef: LINE_REFS.BUS_520,
-    }),
-    N33: primUrl("/marketplace/stop-monitoring", {
-      MonitoringRef: STOPS.JOINVILLE_RER.N33[0],
-      LineRef: LINE_REFS.N33,
-    }),
-    N34: primUrl("/marketplace/stop-monitoring", {
-      MonitoringRef: STOPS.JOINVILLE_RER.N34[0],
-      LineRef: LINE_REFS.N34,
-    }),
-  },
+  JOINVILLE: Object.fromEntries(
+    Object.entries(STOPS.JOINVILLE_RER).map(([k, v]) => [
+      k,
+      primUrl("/marketplace/stop-monitoring", {
+        MonitoringRef: v[0],
+        LineRef: LINE_REFS[k],
+      }),
+    ])
+  ),
 
-  ECOLE_DU_BREUIL: {
-    BUS_77: primUrl("/marketplace/stop-monitoring", {
-      MonitoringRef: STOPS.ECOLE_DU_BREUIL.BUS_77[0],
-      LineRef: LINE_REFS.BUS_77,
-    }),
-    BUS_201: primUrl("/marketplace/stop-monitoring", {
-      MonitoringRef: STOPS.ECOLE_DU_BREUIL.BUS_201[0],
-      LineRef: LINE_REFS.BUS_201,
-    }),
-    N33: primUrl("/marketplace/stop-monitoring", {
-      MonitoringRef: STOPS.ECOLE_DU_BREUIL.N33[0],
-      LineRef: LINE_REFS.N33,
-    }),
-  },
+  ECOLE_DU_BREUIL: Object.fromEntries(
+    Object.entries(STOPS.ECOLE_DU_BREUIL).map(([k, v]) => [
+      k,
+      primUrl("/marketplace/stop-monitoring", {
+        MonitoringRef: v[0],
+        LineRef: LINE_REFS[k],
+      }),
+    ])
+  ),
 
-  HIPPODROME_VINCENNES: {
-    BUS_77: primUrl("/marketplace/stop-monitoring", {
-      MonitoringRef: STOPS.HIPPODROME_VINCENNES.BUS_77[0],
-      LineRef: LINE_REFS.BUS_77,
-    }),
-    BUS_112: primUrl("/marketplace/stop-monitoring", {
-      MonitoringRef: STOPS.HIPPODROME_VINCENNES.BUS_112[0],
-      LineRef: LINE_REFS.BUS_112,
-    }),
-    N33: primUrl("/marketplace/stop-monitoring", {
-      MonitoringRef: STOPS.HIPPODROME_VINCENNES.N33[0],
-      LineRef: LINE_REFS.N33,
-    }),
-    N71: primUrl("/marketplace/stop-monitoring", {
-      MonitoringRef: STOPS.HIPPODROME_VINCENNES.N71[0],
-      LineRef: LINE_REFS.N71,
-    }),
-  },
+  HIPPODROME_VINCENNES: Object.fromEntries(
+    Object.entries(STOPS.HIPPODROME_VINCENNES).map(([k, v]) => [
+      k,
+      primUrl("/marketplace/stop-monitoring", {
+        MonitoringRef: v[0],
+        LineRef: LINE_REFS[k],
+      }),
+    ])
+  ),
 };
 
 // =====================================================
@@ -157,7 +106,7 @@ export const TRAFFIC = Object.fromEntries(
 );
 
 // =====================================================
-// 🌦️ Météo, actualités, Vélib’
+// 🌦️ Météo, Actualités, Vélib’
 // =====================================================
 export const WEATHER_URL = "https://api.open-meteo.com/v1/forecast";
 export const WEATHER_PARAMS = {
@@ -181,7 +130,7 @@ export const VELIB_STATION_NAMES = {
 };
 
 // =====================================================
-// 🔁 Rafraîchissements + compatibilité
+// 🔁 Rafraîchissements + Config
 // =====================================================
 export const REFRESH_INTERVALS = {
   RER: 30000,
@@ -191,10 +140,6 @@ export const REFRESH_INTERVALS = {
   VELIB: 60000,
   NEWS: 180000,
 };
-
-export function withProxy(url) {
-  return PROXY_URL + encodeURIComponent(url);
-}
 
 export const API_ENDPOINTS = {
   ...URLS.JOINVILLE,
@@ -214,34 +159,14 @@ export const ITINERARY_CONSTANTS = {
 export const TRANSPORT_CONFIG = {
   JOINVILLE: {
     label: "Joinville-le-Pont RER",
-    lines: {
-      RERA: LINE_REFS.RERA,
-      BUS_77: LINE_REFS.BUS_77,
-      BUS_201: LINE_REFS.BUS_201,
-      BUS_108: LINE_REFS.BUS_108,
-      BUS_110: LINE_REFS.BUS_110,
-      BUS_101: LINE_REFS.BUS_101,
-      BUS_281: LINE_REFS.BUS_281,
-      BUS_520: LINE_REFS.BUS_520,
-      N33: LINE_REFS.N33,
-      N34: LINE_REFS.N34,
-    },
+    lines: LINE_REFS,
   },
   ECOLE_DU_BREUIL: {
     label: "École du Breuil / Pyramides",
-    lines: {
-      BUS_77: LINE_REFS.BUS_77,
-      BUS_201: LINE_REFS.BUS_201,
-      N33: LINE_REFS.N33,
-    },
+    lines: LINE_REFS,
   },
   HIPPODROME_VINCENNES: {
     label: "Hippodrome de Vincennes",
-    lines: {
-      BUS_77: LINE_REFS.BUS_77,
-      BUS_112: LINE_REFS.BUS_112,
-      N33: LINE_REFS.N33,
-      N71: LINE_REFS.N71,
-    },
+    lines: LINE_REFS,
   },
 };
