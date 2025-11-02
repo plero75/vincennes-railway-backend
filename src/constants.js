@@ -1,95 +1,81 @@
 // =====================================================
-// 🌐 constants.js — Dashboard Vincennes (référentiel IDFM validé 2025-11-02)
+// 🌐 constants.js — Dashboard Joinville-le-Pont (toutes lignes 2025-11-02)
 // =====================================================
 
-// ---------------------------------------------
-// 🔐 Proxy Cloudflare (clé API IDFM gérée côté Worker)
-// ---------------------------------------------
 export const PROXY_URL =
   "https://ratp-proxy.hippodrome-proxy42.workers.dev/?url=";
 
-export function primUrl(path, params) {
+function primUrl(path, params) {
   const base = "https://prim.iledefrance-mobilites.fr" + path;
   const qs = new URLSearchParams(params).toString();
   return PROXY_URL + encodeURIComponent(`${base}?${qs}`);
 }
 
 // =====================================================
-// 🚆 Lignes officielles (LineRef PRIM)
+// 🚆 LineRef officiels PRIM
 // =====================================================
 export const LINE_REFS = {
   RERA: "STIF:Line::A:",
   BUS_77: "STIF:Line::C02251:",
-  BUS_201: "STIF:Line::C01219:",
+  BUS_101: "STIF:Line::C01130:",
+  BUS_108: "STIF:Line::C01135:",
+  BUS_110: "STIF:Line::C01137:",
+  BUS_112: "STIF:Line::C01139:",
+  BUS_120: "STIF:Line::C01141:",
+  BUS_281: "STIF:Line::C02270:",
+  BUS_520: "STIF:Line::C01399:",
+  N33: "STIF:Line::C01400:",
 };
 
 // =====================================================
-// 🅿️ StopAreas (MonitoringRef / StopAreaRef valides)
+// 🅿️ StopArea / MonitoringRef par ligne
 // =====================================================
-export const STOPS = {
-  JOINVILLE_RER: {
-    RERA: ["STIF:StopArea:SP:43135:"],
-  },
-  HIPPODROME_VINCENNES: {
-    BUS_77: ["STIF:StopArea:SP:463641:"],
-  },
-  ECOLE_DU_BREUIL: {
-    BUS_201: ["STIF:StopArea:SP:463644:"],
-  },
+export const STOPS_JOINVILLE = {
+  RERA: "STIF:StopArea:SP:43135:",
+  BUS_77: "STIF:StopArea:SP:463641:",
+  BUS_101: "STIF:StopArea:SP:70640:",
+  BUS_108: "STIF:StopArea:SP:70640:",
+  BUS_110: "STIF:StopArea:SP:70640:",
+  BUS_112: "STIF:StopArea:SP:463641:",
+  BUS_120: "STIF:StopArea:SP:70640:",
+  BUS_281: "STIF:StopArea:SP:70640:",
+  BUS_520: "STIF:StopArea:SP:70640:",
+  N33: "STIF:StopArea:SP:463641:",
 };
 
 // =====================================================
-// 🌍 URLs PRIM (temps réel & horaires)
+// 🌍 Génération des URLs temps réel et théoriques
 // =====================================================
-export const URLS = {
-  JOINVILLE_RER: {
-    RERA_TR: primUrl("/marketplace/stop-monitoring", {
-      MonitoringRef: STOPS.JOINVILLE_RER.RERA[0],
-      LineRef: LINE_REFS.RERA,
-      MaximumStopVisits: 4,
-    }),
-    RERA_TH: primUrl("/marketplace/v2/navitia/stop_schedules", {
-      stop_area: STOPS.JOINVILLE_RER.RERA[0],
-      line: LINE_REFS.RERA,
-      data_freshness: "base_schedule",
-    }),
-  },
-
-  HIPPODROME_VINCENNES: {
-    BUS_77_TR: primUrl("/marketplace/stop-monitoring", {
-      MonitoringRef: STOPS.HIPPODROME_VINCENNES.BUS_77[0],
-      LineRef: LINE_REFS.BUS_77,
-      MaximumStopVisits: 4,
-    }),
-    BUS_77_TH: primUrl("/marketplace/v2/navitia/stop_schedules", {
-      stop_area: STOPS.HIPPODROME_VINCENNES.BUS_77[0],
-      line: LINE_REFS.BUS_77,
-      data_freshness: "base_schedule",
-    }),
-  },
-
-  ECOLE_DU_BREUIL: {
-    BUS_201_TR: primUrl("/marketplace/stop-monitoring", {
-      MonitoringRef: STOPS.ECOLE_DU_BREUIL.BUS_201[0],
-      LineRef: LINE_REFS.BUS_201,
-      MaximumStopVisits: 4,
-    }),
-    BUS_201_TH: primUrl("/marketplace/v2/navitia/stop_schedules", {
-      stop_area: STOPS.ECOLE_DU_BREUIL.BUS_201[0],
-      line: LINE_REFS.BUS_201,
-      data_freshness: "base_schedule",
-    }),
-  },
-};
+export const URLS_JOINVILLE = Object.fromEntries(
+  Object.entries(STOPS_JOINVILLE).flatMap(([line, stop]) => [
+    [
+      line + "_TR",
+      primUrl("/marketplace/stop-monitoring", {
+        MonitoringRef: stop,
+        LineRef: LINE_REFS[line],
+        MaximumStopVisits: 4,
+      }),
+    ],
+    [
+      line + "_TH",
+      primUrl("/marketplace/v2/navitia/stop_schedules", {
+        stop_area: stop,
+        line: LINE_REFS[line],
+        data_freshness: "base_schedule",
+      }),
+    ],
+  ])
+);
 
 // =====================================================
-// ⚠️ Infos trafic
+// ⚠️ Infos trafic / perturbations
 // =====================================================
-export const TRAFFIC = {
-  RERA: primUrl("/marketplace/general-message", { LineRef: LINE_REFS.RERA }),
-  BUS_77: primUrl("/marketplace/general-message", { LineRef: LINE_REFS.BUS_77 }),
-  BUS_201: primUrl("/marketplace/general-message", { LineRef: LINE_REFS.BUS_201 }),
-};
+export const TRAFFIC = Object.fromEntries(
+  Object.entries(LINE_REFS).map(([key, ref]) => [
+    key,
+    primUrl("/marketplace/general-message", { LineRef: ref }),
+  ])
+);
 
 // =====================================================
 // 🌦️ Météo / Vélib / Actualités
@@ -115,7 +101,7 @@ export const VELIB_STATION_NAMES = {
 };
 
 // =====================================================
-// 🔁 Rafraîchissements + Config d’affichage
+// 🔁 Configurations d’affichage et de rafraîchissement
 // =====================================================
 export const REFRESH_INTERVALS = {
   RER: 30000,
@@ -126,26 +112,16 @@ export const REFRESH_INTERVALS = {
   NEWS: 180000,
 };
 
-export const API_ENDPOINTS = {
-  ...URLS.JOINVILLE_RER,
-  ...URLS.HIPPODROME_VINCENNES,
-  ...URLS.ECOLE_DU_BREUIL,
+// =====================================================
+// 🧭 Config du module Transport
+// =====================================================
+export const TRANSPORT_CONFIG = {
+  JOINVILLE: {
+    label: "Joinville-le-Pont (RER + Bus)",
+    lines: Object.keys(LINE_REFS),
+  },
 };
 
-export const TRANSPORT_CONFIG = {
-  JOINVILLE_RER: {
-    label: "Joinville-le-Pont (RER A)",
-    line: LINE_REFS.RERA,
-    stop: STOPS.JOINVILLE_RER.RERA[0],
-  },
-  HIPPODROME_VINCENNES: {
-    label: "Hippodrome de Vincennes (Bus 77)",
-    line: LINE_REFS.BUS_77,
-    stop: STOPS.HIPPODROME_VINCENNES.BUS_77[0],
-  },
-  ECOLE_DU_BREUIL: {
-    label: "École du Breuil / Pyramides (Bus 201)",
-    line: LINE_REFS.BUS_201,
-    stop: STOPS.ECOLE_DU_BREUIL.BUS_201[0],
-  },
+export const API_ENDPOINTS = {
+  ...URLS_JOINVILLE,
 };
