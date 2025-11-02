@@ -1,16 +1,14 @@
 // =====================================================
-// 🌐 constants.js — Dashboard Vincennes (version corrigée)
+// 🌐 constants.js — Dashboard Vincennes (version corrigée 2025-11)
 // =====================================================
 
 // ---------------------------------------------
-// 🔐 Proxy Cloudflare (clé API IDFM intégrée dans le Worker)
+// 🔐 Proxy Cloudflare (la clé API IDFM est injectée côté Worker)
 // ---------------------------------------------
 export const PROXY_URL =
   "https://ratp-proxy.hippodrome-proxy42.workers.dev/?url=";
 
-/**
- * 🔗 Génère une URL PRIM via proxy
- */
+/** Génère une URL PRIM via proxy */
 export function primUrl(path, params) {
   const base = "https://prim.iledefrance-mobilites.fr" + path;
   const qs = new URLSearchParams(params).toString();
@@ -18,7 +16,7 @@ export function primUrl(path, params) {
 }
 
 // =====================================================
-// 🚆 Lignes IDFM (LineRef)
+// 🚆 Identifiants de lignes (LineRef IDFM / PRIM)
 // =====================================================
 export const LINE_REFS = {
   RERA: "STIF:Line::C01742:",
@@ -40,17 +38,16 @@ export const LINE_REFS = {
 // =====================================================
 export const STOPS = {
   JOINVILLE_RER: {
-    RERA: ["STIF:StopPoint:Q:473950:"], // ✅ RER A Joinville
-BUS_77: ["STIF:StopPoint:Q:457945:"],
-BUS_201: ["STIF:StopPoint:Q:457949:"],
-BUS_108: ["STIF:StopPoint:Q:457933:"],
-BUS_110: ["STIF:StopPoint:Q:457934:"],
-BUS_281: ["STIF:StopPoint:Q:457944:"],
-BUS_520: ["STIF:StopPoint:Q:457940:"],
-N33: ["STIF:StopPoint:Q:457943:"],
-
-    N33: ["STIF:StopPoint:Q:463641:"],
-    N34: ["STIF:StopPoint:Q:463641:"],
+    RERA: ["STIF:StopPoint:Q:473950:"],
+    BUS_77: ["STIF:StopPoint:Q:457945:"],
+    BUS_201: ["STIF:StopPoint:Q:457949:"],
+    BUS_108: ["STIF:StopPoint:Q:457933:"],
+    BUS_110: ["STIF:StopPoint:Q:457934:"],
+    BUS_101: ["STIF:StopPoint:Q:457933:"], // même zone
+    BUS_281: ["STIF:StopPoint:Q:457944:"],
+    BUS_520: ["STIF:StopPoint:Q:457940:"],
+    N33: ["STIF:StopPoint:Q:457943:"],
+    N34: ["STIF:StopPoint:Q:457943:"],
   },
 
   ECOLE_DU_BREUIL: {
@@ -100,6 +97,10 @@ export const URLS = {
       MonitoringRef: STOPS.JOINVILLE_RER.BUS_281[0],
       LineRef: LINE_REFS.BUS_281,
     }),
+    BUS_520: primUrl("/marketplace/stop-monitoring", {
+      MonitoringRef: STOPS.JOINVILLE_RER.BUS_520[0],
+      LineRef: LINE_REFS.BUS_520,
+    }),
     N33: primUrl("/marketplace/stop-monitoring", {
       MonitoringRef: STOPS.JOINVILLE_RER.N33[0],
       LineRef: LINE_REFS.N33,
@@ -107,10 +108,6 @@ export const URLS = {
     N34: primUrl("/marketplace/stop-monitoring", {
       MonitoringRef: STOPS.JOINVILLE_RER.N34[0],
       LineRef: LINE_REFS.N34,
-    }),
-    BUS_520: primUrl("/marketplace/stop-monitoring", {
-      MonitoringRef: STOPS.JOINVILLE_RER.BUS_520[0],
-      LineRef: LINE_REFS.BUS_520,
     }),
   },
 
@@ -150,7 +147,7 @@ export const URLS = {
 };
 
 // =====================================================
-// ⚠️ Infos trafic (general-message)
+// ⚠️ Infos trafic
 // =====================================================
 export const TRAFFIC = Object.fromEntries(
   Object.entries(LINE_REFS).map(([key, ref]) => [
@@ -160,7 +157,7 @@ export const TRAFFIC = Object.fromEntries(
 );
 
 // =====================================================
-// 🌦️ Météo + Actualités + Vélib’
+// 🌦️ Météo, actualités, Vélib’
 // =====================================================
 export const WEATHER_URL = "https://api.open-meteo.com/v1/forecast";
 export const WEATHER_PARAMS = {
@@ -184,7 +181,7 @@ export const VELIB_STATION_NAMES = {
 };
 
 // =====================================================
-// 🔁 Rafraîchissement et rétrocompatibilités
+// 🔁 Rafraîchissements + compatibilité
 // =====================================================
 export const REFRESH_INTERVALS = {
   RER: 30000,
@@ -225,9 +222,9 @@ export const TRANSPORT_CONFIG = {
       BUS_110: LINE_REFS.BUS_110,
       BUS_101: LINE_REFS.BUS_101,
       BUS_281: LINE_REFS.BUS_281,
+      BUS_520: LINE_REFS.BUS_520,
       N33: LINE_REFS.N33,
       N34: LINE_REFS.N34,
-      BUS_520: LINE_REFS.BUS_520,
     },
   },
   ECOLE_DU_BREUIL: {
