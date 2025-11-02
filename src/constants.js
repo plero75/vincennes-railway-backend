@@ -1,17 +1,25 @@
-
 // =====================================================
-// 🌐 constants.js – Dashboard Hippodrome de Vincennes
+// 🌐 constants.js — Dashboard Vincennes (version corrigée)
 // =====================================================
 
+// ---------------------------------------------
+// 🔐 Proxy Cloudflare (clé API IDFM intégrée dans le Worker)
+// ---------------------------------------------
 export const PROXY_URL =
   "https://ratp-proxy.hippodrome-proxy42.workers.dev/?url=";
 
+/**
+ * 🔗 Génère une URL PRIM via proxy
+ */
 export function primUrl(path, params) {
   const base = "https://prim.iledefrance-mobilites.fr" + path;
   const qs = new URLSearchParams(params).toString();
   return PROXY_URL + encodeURIComponent(`${base}?${qs}`);
 }
 
+// =====================================================
+// 🚆 Lignes IDFM (LineRef)
+// =====================================================
 export const LINE_REFS = {
   RERA: "STIF:Line::C01742:",
   BUS_77: "STIF:Line::C02251:",
@@ -20,31 +28,36 @@ export const LINE_REFS = {
   BUS_110: "STIF:Line::C01139:",
   BUS_101: "STIF:Line::C01130:",
   BUS_281: "STIF:Line::C01260:",
+  BUS_112: "STIF:Line::C01135:",
+  BUS_520: "STIF:Line::C02270:",
   N33: "STIF:Line::C01399:",
   N34: "STIF:Line::C01400:",
-  BUS_520: "STIF:Line::C02270:",
-  BUS_112: "STIF:Line::C01135:",
   N71: "STIF:Line::C01501:",
 };
 
+// =====================================================
+// 🅿️ StopPoints valides (MonitoringRef)
+// =====================================================
 export const STOPS = {
   JOINVILLE_RER: {
-    RERA: ["STIF:StopPoint:Q:22452:", "STIF:StopPoint:Q:22453:"],
-    BUS_77: ["STIF:StopPoint:Q:39406:"],
-    BUS_201: ["STIF:StopPoint:Q:39406:"],
-    BUS_108: ["STIF:StopPoint:Q:39407:"],
-    BUS_110: ["STIF:StopPoint:Q:39407:"],
-    BUS_101: ["STIF:StopPoint:Q:39407:"],
-    BUS_281: ["STIF:StopPoint:Q:39407:"],
-    N33: ["STIF:StopPoint:Q:39406:"],
-    N34: ["STIF:StopPoint:Q:39408:"],
-    BUS_520: ["STIF:StopPoint:Q:39409:"],
+    RERA: ["STIF:StopPoint:Q:473950:"], // ✅ RER A Joinville
+    BUS_77: ["STIF:StopPoint:Q:463641:"],
+    BUS_201: ["STIF:StopPoint:Q:463644:"],
+    BUS_108: ["STIF:StopPoint:Q:70640:"],
+    BUS_110: ["STIF:StopPoint:Q:70640:"],
+    BUS_101: ["STIF:StopPoint:Q:70640:"],
+    BUS_281: ["STIF:StopPoint:Q:70640:"],
+    BUS_520: ["STIF:StopPoint:Q:463641:"],
+    N33: ["STIF:StopPoint:Q:463641:"],
+    N34: ["STIF:StopPoint:Q:463641:"],
   },
+
   ECOLE_DU_BREUIL: {
     BUS_77: ["STIF:StopPoint:Q:463644:"],
     BUS_201: ["STIF:StopPoint:Q:463644:"],
     N33: ["STIF:StopPoint:Q:463644:"],
   },
+
   HIPPODROME_VINCENNES: {
     BUS_77: ["STIF:StopPoint:Q:463641:"],
     BUS_112: ["STIF:StopPoint:Q:463641:"],
@@ -53,14 +66,13 @@ export const STOPS = {
   },
 };
 
+// =====================================================
+// 🌍 URLs PRIM (Stop-Monitoring par zone)
+// =====================================================
 export const URLS = {
   JOINVILLE: {
-    RERA_PARIS: primUrl("/marketplace/stop-monitoring", {
+    RERA: primUrl("/marketplace/stop-monitoring", {
       MonitoringRef: STOPS.JOINVILLE_RER.RERA[0],
-      LineRef: LINE_REFS.RERA,
-    }),
-    RERA_BOISSY: primUrl("/marketplace/stop-monitoring", {
-      MonitoringRef: STOPS.JOINVILLE_RER.RERA[1],
       LineRef: LINE_REFS.RERA,
     }),
     BUS_77: primUrl("/marketplace/stop-monitoring", {
@@ -100,6 +112,7 @@ export const URLS = {
       LineRef: LINE_REFS.BUS_520,
     }),
   },
+
   ECOLE_DU_BREUIL: {
     BUS_77: primUrl("/marketplace/stop-monitoring", {
       MonitoringRef: STOPS.ECOLE_DU_BREUIL.BUS_77[0],
@@ -114,6 +127,7 @@ export const URLS = {
       LineRef: LINE_REFS.N33,
     }),
   },
+
   HIPPODROME_VINCENNES: {
     BUS_77: primUrl("/marketplace/stop-monitoring", {
       MonitoringRef: STOPS.HIPPODROME_VINCENNES.BUS_77[0],
@@ -134,6 +148,9 @@ export const URLS = {
   },
 };
 
+// =====================================================
+// ⚠️ Infos trafic (general-message)
+// =====================================================
 export const TRAFFIC = Object.fromEntries(
   Object.entries(LINE_REFS).map(([key, ref]) => [
     key,
@@ -141,6 +158,9 @@ export const TRAFFIC = Object.fromEntries(
   ])
 );
 
+// =====================================================
+// 🌦️ Météo + Actualités + Vélib’
+// =====================================================
 export const WEATHER_URL = "https://api.open-meteo.com/v1/forecast";
 export const WEATHER_PARAMS = {
   latitude: 48.817,
@@ -152,11 +172,6 @@ export const WEATHER_PARAMS = {
 export const NEWS_FEED_URL = "https://www.francetvinfo.fr/titres.rss";
 export const NEWS_FEED_BACKUP = "https://www.lemonde.fr/rss/une.xml";
 
-export const SYTADIN_URL =
-  "https://www.sytadin.fr/sys/barometres_trafic_courant_courbes_c.json";
-
-export const RACES_JSON_URL = "./data/races.json";
-
 export const VELIB_STATION_IDS = {
   VINCENNES: 12163,
   BREUIL: 12128,
@@ -167,6 +182,9 @@ export const VELIB_STATION_NAMES = {
   [VELIB_STATION_IDS.BREUIL]: "École du Breuil / Pyramides",
 };
 
+// =====================================================
+// 🔁 Rafraîchissement et rétrocompatibilités
+// =====================================================
 export const REFRESH_INTERVALS = {
   RER: 30000,
   BUS: 45000,
@@ -192,22 +210,6 @@ export const ITINERARY_CONSTANTS = {
     RER_A: LINE_REFS.RERA,
     BUS_77: LINE_REFS.BUS_77,
     BUS_201: LINE_REFS.BUS_201,
-  },
-  MAIN_STOPS: {
-    JOINVILLE: [
-      "Joinville-le-Pont",
-      "Champigny",
-      "Saint-Maur–Créteil",
-      "Nogent-sur-Marne",
-      "Vincennes",
-      "Nation",
-    ],
-    VINCENNES: [
-      "Hippodrome de Vincennes",
-      "École du Breuil",
-      "Château de Vincennes",
-      "Joinville-le-Pont",
-    ],
   },
 };
 
