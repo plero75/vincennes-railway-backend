@@ -41,13 +41,14 @@ export const LINE_REFS = {
 export const STOPS = {
   JOINVILLE_RER: {
     RERA: ["STIF:StopPoint:Q:473950:"], // ✅ RER A Joinville
-    BUS_77: ["STIF:StopPoint:Q:463641:"],
-    BUS_201: ["STIF:StopPoint:Q:463644:"],
-    BUS_108: ["STIF:StopPoint:Q:70640:"],
-    BUS_110: ["STIF:StopPoint:Q:70640:"],
-    BUS_101: ["STIF:StopPoint:Q:70640:"],
-    BUS_281: ["STIF:StopPoint:Q:70640:"],
-    BUS_520: ["STIF:StopPoint:Q:463641:"],
+BUS_77: ["STIF:StopPoint:Q:457945:"],
+BUS_201: ["STIF:StopPoint:Q:457949:"],
+BUS_108: ["STIF:StopPoint:Q:457933:"],
+BUS_110: ["STIF:StopPoint:Q:457934:"],
+BUS_281: ["STIF:StopPoint:Q:457944:"],
+BUS_520: ["STIF:StopPoint:Q:457940:"],
+N33: ["STIF:StopPoint:Q:457943:"],
+
     N33: ["STIF:StopPoint:Q:463641:"],
     N34: ["STIF:StopPoint:Q:463641:"],
   },
