@@ -1,5 +1,5 @@
 // =====================================================
-// 🌐 constants.js — Dashboard Joinville-le-Pont (toutes lignes 2025-11-02)
+// 🌐 constants.js — Dashboard Vincennes / Joinville (2025-11)
 // =====================================================
 
 export const PROXY_URL =
@@ -12,7 +12,7 @@ function primUrl(path, params) {
 }
 
 // =====================================================
-// 🚆 LineRef officiels PRIM
+// 🚆 LineRef officiels PRIM (Joinville-le-Pont)
 // =====================================================
 export const LINE_REFS = {
   RERA: "STIF:Line::A:",
@@ -122,6 +122,16 @@ export const TRANSPORT_CONFIG = {
   },
 };
 
+// =====================================================
+// 🔗 Points d’accès unifiés pour le dashboard
+// =====================================================
 export const API_ENDPOINTS = {
   ...URLS_JOINVILLE,
+};
+
+// =====================================================
+// 🧱 Export global STOPS (pour compatibilité)
+// =====================================================
+export const STOPS = {
+  JOINVILLE: STOPS_JOINVILLE,
 };
